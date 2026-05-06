@@ -1,99 +1,138 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>なんでも2026 おしながき</title>
-    <style>
-        body { 
-            font-family: sans-serif; 
-            max-width: 800px; 
-            margin: 2rem auto; 
-            padding: 0 1rem;
-            position: relative;
-            min-height: 100vh;
-        }
-        .bg-image {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 100%;
-            height: 100vh;
-            background: url('https://github.com/bonsai/nandemo2026/blob/main/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%886%E6%97%A5%2005_03_58.png?raw=true') no-repeat right center;
-            background-size: contain;
-            opacity: 0.08;
-            z-index: -1;
-            pointer-events: none;
-        }
-        h1 { border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
-        .project { margin: 1.5rem 0; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
-        .project h2 { margin-top: 0; }
-        .tag { display: inline-block; background: #eee; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem; margin-right: 0.5rem; }
-        a { color: #0366d6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .video-container { margin: 1rem 0; }
-        .video-container iframe { max-width: 100%; height: 315px; }
-        .image-container { margin: 1rem 0; }
-        .image-container img { max-width: 100%; height: auto; border-radius: 8px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>なんでも2026 おしながき</title>
+<style>
+    body {
+        font-family: sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        position: relative;
+        min-height: 100vh;
+        line-height: 1.6;
+    }
+    .bg-image {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        background: url('https://github.com/bonsai/nandemo2026/blob/main/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%886%E6%97%A5%2005_03_58.png?raw=true') no-repeat right center;
+        background-size: contain;
+        /* 初期はとても薄く（0.08） */
+        opacity: var(--bg-opacity, 0.08);
+        z-index: -1;
+        pointer-events: none;
+        transition: opacity 0.1s linear;   /* スクロールが速いときのちらつきを抑える */
+    }
+
+    h1 { border-bottom: 2px solid #333; padding-bottom: .5rem; }
+    .project { margin: 1.5rem 0; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+    .project h2 { margin-top: 0; }
+    .tag { display: inline-block; background:#eee; padding:.2rem .5rem; border-radius:4px; font-size:.9rem; margin-right:.5rem; }
+    a { color:#0366d6; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+</style>
 </head>
 <body>
 <div class="bg-image"></div>
-    <h1>なんでも2026 ボンサイアップス　おしながき</h1>
-    <p>2026年のAIデモプロジェクト集</p>
 
-    <div class="project">
-        <h2>挨拶音声 TTS/Suno</h2>
-        <span class="tag">TTS</span>
-        <span class="tag">Suno</span>
-        <p>挨拶用の音声ファイル</p>
-        <audio controls src="%E6%8C%A8%E6%8B%B6.mp3"></audio><br>
-        <a href="%E6%8C%A8%E6%8B%B6.mp3">音声をダウンロード</a>
-    </div>
+<h1>なんでも2026 ボンサイアップス　おしながき</h1>
+<p>2026年のAIデモプロジェクト集</p>
 
-    <div class="project">
-        <h2>アプリ　いくつにみえる？ VLM</h2>
-        <span class="tag">VLM</span>
-        <p>画像から数を認識するアプリ</p>
-        <a href="https://ikutsu.onrender.com/">アプリを開く</a>
-    </div>
+<div class="project">
+    <h2>挨拶音声 TTS/Suno</h2>
+    <span class="tag">TTS</span><span class="tag">Suno</span>
+    <p>挨拶用の音声ファイル</p>
+    <audio controls src="%E6%8C%A8%E6%8B%B6.mp3"></audio><br>
+    <a href="%E6%8C%A8%E6%8B%B6.mp3">音声をダウンロード</a>
+</div>
 
-    <div class="project">
-        <h2>喜怒哀楽判定ゲーム mediapipe/LLM</h2>
-        <span class="tag">mediapipe</span>
-        <span class="tag">LLM</span>
-        <p>表情から感情を判定するゲーム</p>
-        <a href="https://ikutsu.onrender.com/">ゲームを開く</a>
-    </div>
+<div class="project">
+    <h2>アプリ　いくつにみえる？ VLM</h2>
+    <span class="tag">VLM</span>
+    <p>画像から数を認識するアプリ</p>
+    <a href="https://ikutsu.onrender.com/">アプリを開く</a>
+</div>
 
-    <div class="project">
-        <h2>夢をわけるアプリ localLLM</h2>
-        <span class="tag">localLLM</span>
-        <p>ローカルLLMを使った夢分解アプリ（要ローカル起動）</p>
-        <a href="http://localhost:3000">ローカルで開く</a>
-    </div>
+<div class="project">
+    <h2>喜怒哀楽判定ゲーム mediapipe/LLM</h2>
+    <span class="tag">mediapipe</span><span class="tag">LLM</span>
+    <p>表情から感情を判定するゲーム</p>
+    <a href="https://ikutsu.onrender.com/">ゲームを開く</a>
+</div>
 
-    <div class="project">
-        <h2>夢日記SFが読める夢百夜　localLLM</h2>
-        <span class="tag">localLLM</span>
-        <span class="tag">SF</span>
-        <p>夢日記をSFとして読めるアプリ</p>
-        <a href="http://yume-hyakuya.onrender.com/">アプリを開く</a>
-    </div>
+<div class="project">
+    <h2>夢をわけるアプリ localLLM</h2>
+    <span class="tag">localLLM</span>
+    <p>ローカルLLMを使った夢分解アプリ（要ローカル起動）</p>
+    <a href="http://localhost:3000">ローカルで開く</a>
+</div>
 
-    <div class="project">
-        <h2>おしゃれてれびyoutube</h2>
-        <span class="tag">YouTube</span>
-        <p>YouTubeチャンネル「おしゃれてれび」</p>
-        <a href="https://www.youtube.com/@kanalvideo/">チャンネルを見る</a>
-    </div>
-   
-    <div class="project">
-        <h2>X.com v0n5ai</h2>
-        <span class="tag">X</span>
-        <span class="tag">SNS</span>
-        <p>X.comアカウント</p>
-        <a href="https://x.com/v0n5ai">X.comを開く</a>
-    </div>
+<div class="project">
+    <h2>夢日記SFが読める夢百夜　localLLM</h2>
+    <span class="tag">localLLM</span><span class="tag">SF</span>
+    <p>夢日記をSFとして読めるアプリ</p>
+    <a href="http://yume-hyakuya.onrender.com/">アプリを開く</a>
+</div>
+
+<div class="project">
+    <h2>おしゃれてれびyoutube</h2>
+    <span class="tag">YouTube</span>
+    <p>YouTubeチャンネル「おしゃれてれび」</p>
+    <a href="https://www.youtube.com/@kanalvideo/">チャンネルを見る</a>
+</div>
+
+<div class="project">
+    <h2>X.com v0n5ai</h2>
+    <span class="tag">X</span><span class="tag">SNS</span>
+    <p>X.comアカウント</p>
+    <a href="https://x.com/v0n5ai">X.comを開く</a>
+</div>
+
+<script>
+/**
+ * スクロール位置に応じて背景画像の濃さ（opacity）を変えるロジック
+ *  - ページ最上部: opacity = 0.08（デフォルト）
+ *  - ページ最下部: opacity = 0.48  （0.08 + 0.4 の増加例）
+ *  - 途中で線形に補間
+ */
+(function () {
+    const bg = document.querySelector('.bg-image');
+
+    // 変化させたい最小・最大の opacity
+    const MIN_OPACITY = 0.08;   // 初期状態（薄い）
+    const MAX_OPACITY = 0.48;   // もっと濃くしたいときはここを上げる
+
+    // スクロール情報を requestAnimationFrame で処理するためのフラグ
+    let ticking = false;
+
+    function updateOpacity() {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollY   = window.scrollY || window.pageYOffset;
+        const progress  = docHeight > 0 ? scrollY / docHeight : 0;   // 0〜1
+
+        // 線形補間で opacity を算出
+        const newOpacity = MIN_OPACITY + progress * (MAX_OPACITY - MIN_OPACITY);
+        bg.style.setProperty('--bg-opacity', newOpacity.toFixed(3));
+
+        ticking = false;
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateOpacity);
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', onScroll);
+    // 初回ロード時にも正しい値にしておく
+    updateOpacity();
+})();
+</script>
 </body>
 </html>
