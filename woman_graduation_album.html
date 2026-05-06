@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>卒業アルバム - 電子書籍</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
+      background: linear-gradient(135deg, #f5f1e8 0%, #e8dfd0 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .book-container {
+      width: 100%;
+      max-width: 1200px;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      perspective: 2000px;
+    }
+
+    .book {
+      width: 90%;
+      max-width: 800px;
+      height: 85vh;
+      max-height: 600px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+
+    .page {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, #fefcf8 0%, #faf8f3 50%, #f8f6f1 100%);
+      border: 1px solid #d4c8b8;
+      box-shadow: 
+        0 4px 20px rgba(0,0,0,0.1),
+        inset 0 0 30px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      padding: 40px 30px;
+      backface-visibility: hidden;
+      transform-origin: left center;
+      transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    .page.left {
+      left: 0;
+      border-radius: 10px 0 0 10px;
+      background: linear-gradient(to left, #fefcf8 0%, #faf8f3 50%, #f8f6f1 100%);
+    }
+
+    .page.right {
+      right: 0;
+      border-radius: 0 10px 10px 0;
+      transform-origin: right center;
+    }
+
+    .page.flipped {
+      transform: rotateY(-180deg);
+    }
+
+    .page-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .cover-page {
+      background: linear-gradient(135deg, #8b7355 0%, #6b5a4b 100%);
+      color: #f8f6f1;
+      border: 2px solid #5d4e3c;
+    }
+
+    .cover-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      letter-spacing: 0.2em;
+    }
+
+    .cover-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .student-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      padding: 20px;
+    }
+
+    .student-photo {
+      width: 180px;
+      height: 65vh;
+      max-height: 390px;
+      background: #e8dfd0;
+      border: 3px solid #d4c8b8;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #a09080;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .student-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .student-name {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #4a3f35;
+      margin-bottom: 20px;
+      letter-spacing: 0.1em;
+    }
+
+    .student-info {
+      background: #f8f6f1;
+      border: 1px solid #d4c8b8;
+      border-radius: 8px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      flex: 1 1 auto;
+      min-height: 35vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .info-item {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .info-label {
+      font-size: 0.9rem;
+      color: #8b7355;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 1.1rem;
+      color: #4a3f35;
+      line-height: 1.4;
+    }
+
+    .navigation {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      background: #8b7355;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: inherit;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover {
+      background: #6b5a4b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .nav-btn:disabled {
+      background: #d4c8b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .page-indicator {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      background: #8b7355;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .class-tabs {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .class-tab {
+      background: #8b7355;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    .class-tab:hover {
+      background: #6b5a4b;
+    }
+
+    .class-tab.active {
+      background: #4a3f35;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .book {
+        width: 95%;
+        height: 80vh;
+        max-height: 500px;
+      }
+
+      .page {
+        padding: 20px 15px;
+      }
+
+      .cover-title {
+        font-size: 1.8rem;
+      }
+
+      .student-photo {
+        width: 140px;
+        height: 55vh;
+        max-height: 300px;
+      }
+
+      .student-name {
+        font-size: 1.4rem;
+      }
+
+      .navigation {
+        bottom: 20px;
+      }
+
+      .nav-btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+      }
+
+      .class-tabs {
+        top: 20px;
+        left: 20px;
+        flex-wrap: wrap;
+      }
+
+      .page-indicator {
+        top: 20px;
+        right: 20px;
+        font-size: 0.8rem;
+      }
+    }
+
+    .loading-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #8b7355;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="class-tabs" id="classTabs"></div>
+  <div class="page-indicator" id="pageIndicator">表紙</div>
+  
+  <div class="book-container">
+    <div class="book" id="book">
+      <div class="page left cover-page" id="leftPage">
+        <div class="page-content">
+          <div class="cover-title">卒業アルバム</div>
+          <div class="cover-subtitle">第3学年 36名の想い出</div>
+          <div style="margin-top: 60px; font-size: 1rem; opacity: 0.8;">
+            令和6年度 卒業記念
+          </div>
+        </div>
+      </div>
+      <div class="page right" id="rightPage">
+        <div class="page-content">
+          <div class="loading-placeholder">右ページを準備中...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="navigation">
+    <button class="nav-btn" id="prevBtn" onclick="previousPage()">← 前へ</button>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">次へ →</button>
+  </div>
+
+  <script>
+    const STUDENT_DATA = {
+      "metadata": {"total_students": 108, "num_classes": 3, "students_per_class": 36},
+      "classes": {
+        "1": [
+          {"number": 1, "name": "金子桜子", "future": "専門学校進学", "anime": "ホリミヤ", "snack": "マフィン", "new_filename": "001_金子桜子.png"},
+          {"number": 2, "name": "石川貴子", "future": "音楽専門学校", "anime": "バカとテストと召喚獣", "snack": "コーンチップス", "new_filename": "002_石川貴子.png"},
+          {"number": 3, "name": "中島末子", "future": "ダンサー学校", "anime": "ニセコイ", "snack": "キャンディ", "new_filename": "003_中島末子.png"},
+          {"number": 4, "name": "福田香織", "future": "ホテルマン", "anime": "エロマンガ先生", "snack": "あられ", "new_filename": "004_福田香織.png"},
+          {"number": 5, "name": "雪野敏子", "future": "動物専門学校", "anime": "干物妹!うまるちゃん", "snack": "マフィン", "new_filename": "005_雪野敏子.png"},
+          {"number": 6, "name": "長谷川恵子", "future": "ミュージカル学校", "anime": "けいおん!", "snack": "プリン", "new_filename": "006_長谷川恵子.png"},
+          {"number": 7, "name": "小泉千鶴", "future": "IT 専門学校", "anime": "干物妹!うまるちゃん", "snack": "今川焼き", "new_filename": "007_小泉千鶴.png"},
+          {"number": 8, "name": "龍崎美智子", "future": "短大進学", "anime": "ヲタクに恋は難しい", "snack": "エクレア", "new_filename": "008_龍崎美智子.png"},
+          {"number": 9, "name": "岡田花子", "future": "美術学校", "anime": "四月は君の嘘", "snack": "クッキー", "new_filename": "009_岡田花子.png"},
+          {"number": 10, "name": "山本美咲", "future": "大学進学", "anime": "君の名は。", "snack": "チョコレート", "new_filename": "010_山本美咲.png"},
+          {"number": 11, "name": "佐藤由紀", "future": "看護学校", "anime": "ちはやふる", "snack": "アイスクリーム", "new_filename": "011_佐藤由紀.png"},
+          {"number": 12, "name": "田中愛", "future": "教員養成", "anime": "青い桜", "snack": "わらびもち", "new_filename": "012_田中愛.png"},
+          {"number": 13, "name": "渡辺詩織", "future": "法律専門学校", "anime": "逆転裁判", "snack": "ポテトチップス", "new_filename": "013_渡辺詩織.png"},
+          {"number": 14, "name": "伊藤香奈", "future": "デザイン学校", "anime": "この素晴らしい世界に祝福を", "snack": "パフェ", "new_filename": "014_伊藤香奈.png"},
+          {"number": 15, "name": "中村理恵", "future": "料理学校", "anime": "美味しんぼ", "snack": "タルト", "new_filename": "015_中村理恵.png"},
+          {"number": 16, "name": "小林さくら", "future": "外国語学校", "anime": "氷菓", "snack": "マカロン", "new_filename": "016_小林さくら.png"},
+          {"number": 17, "name": "加藤あや", "future": "体育大学", "anime": "ハイキュー", "snack": "スポーツドリンク", "new_filename": "017_加藤あや.png"},
+          {"number": 18, "name": "吉田美優", "future": "音楽大学", "anime": "響け!ユーフォニアム", "snack": "フルーツ", "new_filename": "018_吉田美優.png"},
+          {"number": 19, "name": "山田結衣", "future": "文学部", "anime": "図書館の魔法", "snack": "紅茶", "new_filename": "019_山田結衣.png"},
+          {"number": 20, "name": "森田夏希", "future": "理学部", "anime": " Dr. STONE", "snack": "ナッツ", "new_filename": "020_森田夏希.png"},
+          {"number": 21, "name": "斎藤莉奈", "future": "工学部", "anime": "鋼の錬金術師", "snack": "ガム", "new_filename": "021_斎藤莉奈.png"},
+          {"number": 22, "name": "藤原さおり", "future": "医学部", "anime": "ブラック・ジャック", "snack": "ヨーグルト", "new_filename": "022_藤原さおり.png"},
+          {"number": 23, "name": "坂本美月", "future": "薬学部", "anime": "もやしもん", "snack": "ゼリー", "new_filename": "023_坂本美月.png"},
+          {"number": 24, "name": "大橋ひかり", "future": "農学部", "anime": "銀の匙", "snack": "野菜ジュース", "new_filename": "024_大橋ひかり.png"},
+          {"number": 25, "name": "松本美緒", "future": "経済学部", "anime": "マクロスF", "snack": "コーヒー", "new_filename": "025_松本美緒.png"},
+          {"number": 26, "name": "井上彩", "future": "商学部", "anime": "ハンターハンター", "snack": "ポップコーン", "new_filename": "026_井上彩.png"},
+          {"number": 27, "name": "木村萌", "future": "社会学部", "anime": "心理測定者", "snack": "チュロス", "new_filename": "027_木村萌.png"},
+          {"number": 28, "name": "林美咲", "future": "情報学部", "anime": "STEINS;GATE", "snack": "ラムネ", "new_filename": "028_林美咲.png"},
+          {"number": 29, "name": "清水琴音", "future": "国際関係学", "anime": "ヘタリア", "snack": "ワッフル", "new_filename": "029_清水琴音.png"},
+          {"number": 30, "name": "川村結衣", "future": "環境学部", "anime": "もののけ姫", "snack": "グリーンスムージー", "new_filename": "030_川村結衣.png"},
+          {"number": 31, "name": "阿部美桜", "future": "教育学部", "anime": "ガールズ&パンツァー", "snack": "ドーナツ", "new_filename": "031_阿部美桜.png"},
+          {"number": 32, "name": "石井莉子", "future": "法学部", "anime": "デスノート", "snack": "チーズケーキ", "new_filename": "032_石井莉子.png"},
+          {"number": 33, "name": "小島あい", "future": "政治経済学部", "anime": "コードギアス", "snack": "プレッツェル", "new_filename": "033_小島あい.png"},
+          {"number": 34, "name": "村田美緒", "future": "総合人間学部", "anime": "夏目友人帳", "snack": "ようかん", "new_filename": "034_村田美緒.png"},
+          {"number": 35, "name": "福田結菜", "future": "文学部日本語学", "anime": "文豪ストレイドッグス", "snack": "抹茶ラテ", "new_filename": "035_福田結菜.png"},
+          {"number": 36, "name": "遠藤さくら", "future": "理学部生物科学", "anime": "寄生獣", "snack": "フルーツポンチ", "new_filename": "036_遠藤さくら.png"}
+        ],
+        "2": [
+          {"number": 37, "name": "青木美希", "future": "大学進学", "anime": "君の名は。", "snack": "チョコレート", "new_filename": "037_青木美希.png"},
+          {"number": 38, "name": "前田愛", "future": "看護学校", "anime": "ちはやふる", "snack": "アイスクリーム", "new_filename": "038_前田愛.png"},
+          {"number": 39, "name": "藤井結衣", "future": "教員養成", "anime": "青い桜", "snack": "わらびもち", "new_filename": "039_藤井結衣.png"},
+          {"number": 40, "name": "西村詩織", "future": "法律専門学校", "anime": "逆転裁判", "snack": "ポテトチップス", "new_filename": "040_西村詩織.png"},
+          {"number": 41, "name": "岡田香奈", "future": "デザイン学校", "anime": "この素晴らしい世界に祝福を", "snack": "パフェ", "new_filename": "041_岡田香奈.png"},
+          {"number": 42, "name": "武田理恵", "future": "料理学校", "anime": "美味しんぼ", "snack": "タルト", "new_filename": "042_武田理恵.png"},
+          {"number": 43, "name": "小川さくら", "future": "外国語学校", "anime": "氷菓", "snack": "マカロン", "new_filename": "043_小川さくら.png"},
+          {"number": 44, "name": "中川あや", "future": "体育大学", "anime": "ハイキュー", "snack": "スポーツドリンク", "new_filename": "044_中川あや.png"},
+          {"number": 45, "name": "原田美優", "future": "音楽大学", "anime": "響け!ユーフォニアム", "snack": "フルーツ", "new_filename": "045_原田美優.png"},
+          {"number": 46, "name": "長谷川結衣", "future": "文学部", "anime": "図書館の魔法", "snack": "紅茶", "new_filename": "046_長谷川結衣.png"},
+          {"number": 47, "name": "星野夏希", "future": "理学部", "anime": " Dr. STONE", "snack": "ナッツ", "new_filename": "047_星野夏希.png"},
+          {"number": 48, "name": "菊池莉奈", "future": "工学部", "anime": "鋼の錬金術師", "snack": "ガム", "new_filename": "048_菊池莉奈.png"},
+          {"number": 49, "name": "安藤さおり", "future": "医学部", "anime": "ブラック・ジャック", "snack": "ヨーグルト", "new_filename": "049_安藤さおり.png"},
+          {"number": 50, "name": "野村美月", "future": "薬学部", "anime": "もやしもん", "snack": "ゼリー", "new_filename": "050_野村美月.png"},
+          {"number": 51, "name": "杉山ひかり", "future": "農学部", "anime": "銀の匙", "snack": "野菜ジュース", "new_filename": "051_杉山ひかり.png"},
+          {"number": 52, "name": "平野美緒", "future": "経済学部", "anime": "マクロスF", "snack": "コーヒー", "new_filename": "052_平野美緒.png"},
+          {"number": 53, "name": "久保井上彩", "future": "商学部", "anime": "ハンターハンター", "snack": "ポップコーン", "new_filename": "053_久保井上彩.png"},
+          {"number": 54, "name": "岩崎萌", "future": "社会学部", "anime": "心理測定者", "snack": "チュロス", "new_filename": "054_岩崎萌.png"},
+          {"number": 55, "name": "桜井美咲", "future": "情報学部", "anime": "STEINS;GATE", "snack": "ラムネ", "new_filename": "055_桜井美咲.png"},
+          {"number": 56, "name": "望月琴音", "future": "国際関係学", "anime": "ヘタリア", "snack": "ワッフル", "new_filename": "056_望月琴音.png"},
+          {"number": 57, "name": "市川結衣", "future": "環境学部", "anime": "もののけ姫", "snack": "グリーンスムージー", "new_filename": "057_市川結衣.png"},
+          {"number": 58, "name": "三浦美桜", "future": "教育学部", "anime": "ガールズ&パンツァー", "snack": "ドーナツ", "new_filename": "058_三浦美桜.png"},
+          {"number": 59, "name": "横山莉子", "future": "法学部", "anime": "デスノート", "snack": "チーズケーキ", "new_filename": "059_横山莉子.png"},
+          {"number": 60, "name": "柴田あい", "future": "政治経済学部", "anime": "コードギアス", "snack": "プレッツェル", "new_filename": "060_柴田あい.png"},
+          {"number": 61, "name": "東海林美緒", "future": "総合人間学部", "anime": "夏目友人帳", "snack": "ようかん", "new_filename": "061_東海林美緒.png"},
+          {"number": 62, "name": "小山田結菜", "future": "文学部日本語学", "anime": "文豪ストレイドッグス", "snack": "抹茶ラテ", "new_filename": "062_小山田結菜.png"},
+          {"number": 63, "name": "早川さくら", "future": "理学部生物科学", "anime": "寄生獣", "snack": "フルーツポンチ", "new_filename": "063_早川さくら.png"},
+          {"number": 64, "name": "片桐美希", "future": "大学進学", "anime": "天元突破グレンラガン", "snack": "クッキー", "new_filename": "064_片桐美希.png"},
+          {"number": 65, "name": "宮崎愛", "future": "看護学校", "anime": "白い巨塔", "snack": "プリン", "new_filename": "065_宮崎愛.png"},
+          {"number": 66, "name": "高橋結衣", "future": "教員養成", "anime": "ご注文はうさぎですか", "snack": "ケーキ", "new_filename": "066_高橋結衣.png"},
+          {"number": 67, "name": "関口詩織", "future": "法律専門学校", "anime": "推理の果て", "snack": "せんべい", "new_filename": "067_関口詩織.png"},
+          {"number": 68, "name": "松尾香奈", "future": "デザイン学校", "anime": "君の膵臓をたべたい", "snack": "シュークリーム", "new_filename": "068_松尾香奈.png"},
+          {"number": 69, "name": "小野理恵", "future": "料理学校", "anime": "孤独のグルメ", "snack": "ラーメン", "new_filename": "069_小野理恵.png"},
+          {"number": 70, "name": "菅原さくら", "future": "外国語学校", "anime": "言葉の庭", "snack": "アフォガード", "new_filename": "070_菅原さくら.png"},
+          {"number": 71, "name": "土屋あや", "future": "体育大学", "anime": "黒子のバスケ", "snack": "エナジードリンク", "new_filename": "071_土屋あや.png"},
+          {"number": 72, "name": "大塚美優", "future": "音楽大学", "anime": "四月は君の嘘", "snack": "ジェラート", "new_filename": "072_大塚美優.png"}
+        ],
+        "3": [
+          {"number": 73, "name": "宮下結衣", "future": "文学部", "anime": "図書館の魔法", "snack": "紅茶", "new_filename": "073_宮下結衣.png"},
+          {"number": 74, "name": "徳永夏希", "future": "理学部", "anime": " Dr. STONE", "snack": "ナッツ", "new_filename": "074_徳永夏希.png"},
+          {"number": 75, "name": "菅野莉奈", "future": "工学部", "anime": "鋼の錬金術師", "snack": "ガム", "new_filename": "075_菅野莉奈.png"},
+          {"number": 76, "name": "熊谷さおり", "future": "医学部", "anime": "ブラック・ジャック", "snack": "ヨーグルト", "new_filename": "076_熊谷さおり.png"},
+          {"number": 77, "name": "荻野美月", "future": "薬学部", "anime": "もやしもん", "snack": "ゼリー", "new_filename": "077_荻野美月.png"},
+          {"number": 78, "name": "小林ひかり", "future": "農学部", "anime": "銀の匙", "snack": "野菜ジュース", "new_filename": "078_小林ひかり.png"},
+          {"number": 79, "name": "藤田美緒", "future": "経済学部", "anime": "マクロスF", "snack": "コーヒー", "new_filename": "079_藤田美緒.png"},
+          {"number": 80, "name": "今井彩", "future": "商学部", "anime": "ハンターハンター", "snack": "ポップコーン", "new_filename": "080_今井彩.png"},
+          {"number": 81, "name": "河合萌", "future": "社会学部", "anime": "心理測定者", "snack": "チュロス", "new_filename": "081_河合萌.png"},
+          {"number": 82, "name": "渡辺美咲", "future": "情報学部", "anime": "STEINS;GATE", "snack": "ラムネ", "new_filename": "082_渡辺美咲.png"},
+          {"number": 83, "name": "中島琴音", "future": "国際関係学", "anime": "ヘタリア", "snack": "ワッフル", "new_filename": "083_中島琴音.png"},
+          {"number": 84, "name": "上野結衣", "future": "環境学部", "anime": "もののけ姫", "snack": "グリーンスムージー", "new_filename": "084_上野結衣.png"},
+          {"number": 85, "name": "小池美桜", "future": "教育学部", "anime": "ガールズ&パンツァー", "snack": "ドーナツ", "new_filename": "085_小池美桜.png"},
+          {"number": 86, "name": "野村莉子", "future": "法学部", "anime": "デスノート", "snack": "チーズケーキ", "new_filename": "086_野村莉子.png"},
+          {"number": 87, "name": "谷口あい", "future": "政治経済学部", "anime": "コードギアス", "snack": "プレッツェル", "new_filename": "087_谷口あい.png"},
+          {"number": 88, "name": "大島美緒", "future": "総合人間学部", "anime": "夏目友人帳", "snack": "ようかん", "new_filename": "088_大島美緒.png"},
+          {"number": 89, "name": "山下結菜", "future": "文学部日本語学", "anime": "文豪ストレイドッグス", "snack": "抹茶ラテ", "new_filename": "089_山下結菜.png"},
+          {"number": 90, "name": "松田さくら", "future": "理学部生物科学", "anime": "寄生獣", "snack": "フルーツポンチ", "new_filename": "090_松田さくら.png"},
+          {"number": 91, "name": "工藤美希", "future": "大学進学", "anime": "新世紀エヴァンゲリオン", "snack": "チョコバナナ", "new_filename": "091_工藤美希.png"},
+          {"number": 92, "name": "佐々木愛", "future": "看護学校", "anime": "ER緊急救命室", "snack": "バニラアイス", "new_filename": "092_佐々木愛.png"},
+          {"number": 93, "name": "鈴木結衣", "future": "教員養成", "anime": "GTO", "snack": "たい焼き", "new_filename": "093_鈴木結衣.png"},
+          {"number": 94, "name": "高木詩織", "future": "法律専門学校", "anime": "リーガル・ハイ", "snack": "おせんべい", "new_filename": "094_高木詩織.png"},
+          {"number": 95, "name": "斉藤香奈", "future": "デザイン学校", "anime": "咲-Saki-", "snack": "カステラ", "new_filename": "095_斉藤香奈.png"},
+          {"number": 96, "name": "田中理恵", "future": "料理学校", "anime": "包丁人味平", "snack": "お好み焼き", "new_filename": "096_田中理恵.png"},
+          {"number": 97, "name": "伊藤さくら", "future": "外国語学校", "anime": "言の葉の庭", "snack": "パンケーキ", "new_filename": "097_伊藤さくら.png"},
+          {"number": 98, "name": "渡辺あや", "future": "体育大学", "anime": "SLAM DUNK", "snack": "スポーツドリンク", "new_filename": "098_渡辺あや.png"},
+          {"number": 99, "name": "中村美優", "future": "音楽大学", "anime": "NANA", "snack": "アイスキャンディー", "new_filename": "099_中村美優.png"},
+          {"number": 100, "name": "小林結衣", "future": "文学部", "anime": "図書館戦争", "snack": "ハーブティー", "new_filename": "100_小林結衣.png"},
+          {"number": 101, "name": "加藤夏希", "future": "理学部", "anime": "宇宙兄弟", "snack": "宇宙食品", "new_filename": "101_加藤夏希.png"},
+          {"number": 102, "name": "吉田莉奈", "future": "工学部", "anime": "機動戦士ガンダム", "snack": "メカ風スナック", "new_filename": "102_吉田莉奈.png"},
+          {"number": 103, "name": "山田さおり", "future": "医学部", "anime": "ブラック・ジャック", "snack": "カルシウム", "new_filename": "103_山田さおり.png"},
+          {"number": 104, "name": "佐藤美月", "future": "薬学部", "anime": "もやしもん", "snack": "ビタミン", "new_filename": "104_佐藤美月.png"},
+          {"number": 105, "name": "田中ひかり", "future": "農学部", "anime": "銀の匙", "snack": "野菜チップス", "new_filename": "105_田中ひかり.png"},
+          {"number": 106, "name": "伊藤美緒", "future": "経済学部", "anime": "マクロスF", "snack": "経済菓子", "new_filename": "106_伊藤美緒.png"},
+          {"number": 107, "name": "中村彩", "future": "商学部", "anime": "ハンターハンター", "snack": "商売菓子", "new_filename": "107_中村彩.png"},
+          {"number": 108, "name": "小林萌", "future": "社会学部", "anime": "心理測定者", "snack": "社会菓子", "new_filename": "108_小林萌.png"}
+        ]
+      }
+    };
+
+    let currentClass = '1';
+    let currentPage = 0;
+    let currentStudents = [];
+    let totalPages = 0;
+
+    function initializeClassTabs() {
+      const tabsContainer = document.getElementById('classTabs');
+      Object.keys(STUDENT_DATA.classes).forEach(className => {
+        const tab = document.createElement('button');
+        tab.className = 'class-tab' + (className === currentClass ? ' active' : '');
+        tab.textContent = `${className}組`;
+        tab.onclick = () => switchClass(className);
+        tabsContainer.appendChild(tab);
+      });
+    }
+
+    function switchClass(className) {
+      currentClass = className;
+      currentPage = 0;
+      currentStudents = STUDENT_DATA.classes[className];
+      totalPages = Math.ceil(currentStudents.length / 2) + 1;
+      
+      document.querySelectorAll('.class-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.textContent === `${className}組`);
+      });
+      
+      updatePages();
+    }
+
+    function createStudentPage(student) {
+      const imagePath = `images/woman_reorganized/${currentClass}/${student.new_filename}`;
+      return `
+        <div class="student-profile">
+          <div class="student-photo">
+            <img src="${imagePath}" alt="${student.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='👤';">
+          </div>
+          <div class="student-name">${student.name}</div>
+          <div class="student-info">
+            <div class="info-item">
+              <span class="info-label">卒業後の進路</span>
+              <span class="info-value">${student.future}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">好きなアニメ・ラブコメ</span>
+              <span class="info-value">${student.anime}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">好きなお菓子</span>
+              <span class="info-value">${student.snack}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updatePages() {
+      const leftPage = document.getElementById('leftPage');
+      const rightPage = document.getElementById('rightPage');
+      
+      if (currentPage === 0) {
+        leftPage.className = 'page left cover-page';
+        leftPage.innerHTML = `
+          <div class="page-content">
+            <div class="cover-title">卒業アルバム</div>
+            <div class="cover-subtitle">第${currentClass}組 ${currentStudents.length}名の想い出</div>
+            <div style="margin-top: 60px; font-size: 1rem; opacity: 0.8;">
+              令和6年度 卒業記念
+            </div>
+          </div>
+        `;
+        
+        if (currentStudents.length > 0) {
+          rightPage.className = 'page right';
+          rightPage.innerHTML = `<div class="page-content">${createStudentPage(currentStudents[0])}</div>`;
+        } else {
+          rightPage.innerHTML = '<div class="page-content"><div class="loading-placeholder">データがありません</div></div>';
+        }
+      } else {
+        const leftIndex = (currentPage - 1) * 2;
+        const rightIndex = leftIndex + 1;
+        
+        leftPage.className = 'page left';
+        rightPage.className = 'page right';
+        
+        if (leftIndex < currentStudents.length) {
+          leftPage.innerHTML = `<div class="page-content">${createStudentPage(currentStudents[leftIndex])}</div>`;
+        } else {
+          leftPage.innerHTML = '<div class="page-content"><div class="loading-placeholder">終了</div></div>';
+        }
+        
+        if (rightIndex < currentStudents.length) {
+          rightPage.innerHTML = `<div class="page-content">${createStudentPage(currentStudents[rightIndex])}</div>`;
+        } else {
+          rightPage.innerHTML = '<div class="page-content"><div class="loading-placeholder">終了</div></div>';
+        }
+      }
+      
+      updatePageIndicator();
+      updateNavigationButtons();
+    }
+
+    function updatePageIndicator() {
+      const indicator = document.getElementById('pageIndicator');
+      if (currentPage === 0) {
+        indicator.textContent = '表紙';
+      } else {
+        indicator.textContent = `${currentPage} / ${totalPages - 1}`;
+      }
+    }
+
+    function updateNavigationButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage >= totalPages - 1;
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        updatePages();
+      }
+    }
+
+    function previousPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePages();
+      }
+    }
+
+    function handleKeyboardNavigation(e) {
+      if (e.key === 'ArrowRight') nextPage();
+      if (e.key === 'ArrowLeft') previousPage();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeClassTabs();
+      switchClass('1');
+      document.addEventListener('keydown', handleKeyboardNavigation);
+    });
+  </script>
+</body>
+</html>
