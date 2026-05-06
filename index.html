@@ -31,7 +31,7 @@
     h1 { border-bottom: 2px solid #333; padding-bottom: .5rem; }
     .project { 
         margin: 1.5rem 0; 
-        padding: 1rem 110px 1rem 1rem;   /* 右側に QR 用の余白を確保 */
+        padding: 1rem 110px 1rem 1rem;   /* 右側に QR 用の余白 */
         border: 1px solid #ddd; 
         border-radius: 8px; 
         position: relative;            /* 絶対配置の基準になる */
@@ -44,22 +44,31 @@
     a { color:#0366d6; text-decoration:none; }
     a:hover { text-decoration:underline; }
 
-    /* ---------------- QRコードのスタイル ---------------- */
+    /* ---------------- QRコード ---------------- */
     .qr-wrapper {
-        position: absolute;            /* カードの右側に固定 */
-        top: 50%;                      /* 縦方向は中央 */
-        right: 10px;                   /* カード右端からの余白 */
+        position: absolute;
+        top: 50%;
+        right: 10px;
         width: 80px;
         height: 80px;
         background:#fff;
         padding:4px;
         box-shadow:0 0 4px rgba(0,0,0,.2);
         border-radius:4px;
-        transform: translateY(-50%);   /* 親要素の高さの半分だけ上へずらす */
-        display:flex;
+        transform: translateY(-50%);
+        display: flex;               /* デフォルトは非表示にするのでここは書いておく */
         justify-content:center;
         align-items:center;
+
+        /* ★ ここで非表示に設定 ★ */
+        display: none;               /* デフォルト＝非表示 */
     }
+
+    /* ホバーしたときだけ表示 */
+    .project:hover .qr-wrapper {
+        display: flex;               /* カーソルがカードに乗ったら出す */
+    }
+
     .qr-wrapper img {
         width:100%;
         height:100%;
@@ -154,19 +163,16 @@
 })();
 
 /* --------------------------------------------------------------
- *  2️⃣ 各リンクを QR コード化してカード内右表示（絶対配置）
+ *  2️⃣ 各リンクを QR コード化してカード内右側に配置
  * -------------------------------------------------------------- */
 (function () {
     const QR_BASE = 'https://chart.googleapis.com/chart?chs=80x80&cht=qr&chl=';
 
-    // すべての .project 要素を取得
-    const projects = document.querySelectorAll('.project');
-
-    projects.forEach(project => {
+    document.querySelectorAll('.project').forEach(project => {
         const link = project.querySelector('a[href]');
-        if (!link) return;                 // リンクが無いカードはスキップ
+        if (!link) return;                     // リンクが無ければスキップ
 
-        const url = link.getAttribute('href');
+        const url    = link.getAttribute('href');
         const imgSrc = QR_BASE + encodeURIComponent(url);
 
         const wrapper = document.createElement('div');
@@ -177,7 +183,7 @@
         img.alt = `QR code for ${url}`;
 
         wrapper.appendChild(img);
-        project.appendChild(wrapper);      // 絶対配置なので位置は右側に固定
+        project.appendChild(wrapper);           // 絶対配置のまま追加
     });
 })();
 </script>
