@@ -31,11 +31,11 @@
     h1 { border-bottom: 2px solid #333; padding-bottom: .5rem; }
     .project { 
         margin: 1.5rem 0; 
-        padding: 1rem; 
+        padding: 1rem 110px 1rem 1rem;   /* 右側に QR 用の余白を確保 */
         border: 1px solid #ddd; 
         border-radius: 8px; 
-        position: relative;           /* 以前は QR を絶対配置で使っていたが、今回は中央に配置 */
-        text-align: left;             /* 文字は左寄せのまま */
+        position: relative;            /* 絶対配置の基準になる */
+        text-align: left;              
     }
     .project h2 { margin-top: 0; }
 
@@ -46,13 +46,16 @@
 
     /* ---------------- QRコードのスタイル ---------------- */
     .qr-wrapper {
+        position: absolute;            /* カードの右側に固定 */
+        top: 50%;                      /* 縦方向は中央 */
+        right: 10px;                   /* カード右端からの余白 */
         width: 80px;
         height: 80px;
-        margin: 1rem auto 0;          /* 上側に少し余白を付けてセンタリング */
         background:#fff;
         padding:4px;
         box-shadow:0 0 4px rgba(0,0,0,.2);
         border-radius:4px;
+        transform: translateY(-50%);   /* 親要素の高さの半分だけ上へずらす */
         display:flex;
         justify-content:center;
         align-items:center;
@@ -151,7 +154,7 @@
 })();
 
 /* --------------------------------------------------------------
- *  2️⃣ 各リンクを QR コード化してカード内に中央表示
+ *  2️⃣ 各リンクを QR コード化してカード内右表示（絶対配置）
  * -------------------------------------------------------------- */
 (function () {
     const QR_BASE = 'https://chart.googleapis.com/chart?chs=80x80&cht=qr&chl=';
@@ -174,7 +177,7 @@
         img.alt = `QR code for ${url}`;
 
         wrapper.appendChild(img);
-        project.appendChild(wrapper);      // カードの最後に追加 → 中央寄せになる
+        project.appendChild(wrapper);      // 絶対配置なので位置は右側に固定
     });
 })();
 </script>
