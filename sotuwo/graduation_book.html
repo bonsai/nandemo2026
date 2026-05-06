@@ -497,7 +497,9 @@
       return `
         <div class="student-profile">
           <div class="student-photo">
-            <img src="${imagePath}" alt="${student.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='👤';">
+            <img src="${imagePath}" alt="${student.name}" 
+                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\"display: flex; align-items: center; justify-content: center; height: 100%; font-size: 3rem; color: #a09080; text-align: center; padding: 20px;\">👤<br><small style=\"font-size: 0.8rem; color: #666;\">画像準備中</small></div>';"
+                 onload="this.style.display='block';">
           </div>
           <div class="student-name">${student.name}</div>
           <div class="student-info">
