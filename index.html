@@ -1,100 +1,200 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>なんでも2026 おしながき</title>
-    <style>
-        body { 
-            font-family: sans-serif; 
-            max-width: 800px; 
-            margin: 2rem auto; 
-            padding: 0 1rem;
-            position: relative;
-            min-height: 100vh;
-        }
-        .bg-image {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 100%;
-            height: 100vh;
-            background: url('https://github.com/bonsai/nandemo2026/blob/main/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%886%E6%97%A5%2005_03_58.png?raw=true') no-repeat right center;
-            background-size: contain;
-            opacity: 0.08;
-            z-index: -1;
-            pointer-events: none;
-        }
-        h1 { border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
-        .project { margin: 1.5rem 0; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
-        .project h2 { margin-top: 0; }
-        .tag { display: inline-block; background: #eee; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem; margin-right: 0.5rem; }
-        a { color: #0366d6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .video-container { margin: 1rem 0; }
-        .video-container iframe { max-width: 100%; height: 315px; }
-        .image-container { margin: 1rem 0; }
-        .image-container img { max-width: 100%; height: auto; border-radius: 8px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>なんでも2026 おしながき</title>
+<style>
+    body {
+        font-family: sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        position: relative;
+        min-height: 100vh;
+        line-height: 1.6;
+    }
+    .bg-image {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        background: url('https://github.com/bonsai/nandemo2026/blob/main/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%886%E6%97%A5%2005_03_58.png?raw=true') no-repeat right center;
+        background-size: contain;
+        opacity: var(--bg-opacity, 0.08);
+        z-index: -1;
+        pointer-events: none;
+        transition: opacity 0.1s linear;
+    }
+
+    h1 { border-bottom: 2px solid #333; padding-bottom: .5rem; }
+    .project { 
+        margin: 1.5rem 0; 
+        padding: 1rem 110px 1rem 1rem;   /* 右側に QR 用の余白 */
+        border: 1px solid #ddd; 
+        border-radius: 8px; 
+        position: relative;            /* 絶対配置の基準になる */
+        text-align: left;              
+    }
+    .project h2 { margin-top: 0; }
+
+    .tag { display: inline-block; background:#eee; padding:.2rem .5rem; border-radius:4px; font-size:.9rem; margin-right:.5rem; }
+
+    a { color:#0366d6; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+
+    /* ---------------- QRコード ---------------- */
+    .qr-wrapper {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        width: 80px;
+        height: 80px;
+        background:#fff;
+        padding:4px;
+        box-shadow:0 0 4px rgba(0,0,0,.2);
+        border-radius:4px;
+        transform: translateY(-50%);
+        display: flex;               /* デフォルトは非表示にするのでここは書いておく */
+        justify-content:center;
+        align-items:center;
+
+        /* ★ ここで非表示に設定 ★ */
+        display: none;               /* デフォルト＝非表示 */
+    }
+
+    /* ホバーしたときだけ表示 */
+    .project:hover .qr-wrapper {
+        display: flex;               /* カーソルがカードに乗ったら出す */
+    }
+
+    .qr-wrapper img {
+        width:100%;
+        height:100%;
+        display:block;
+    }
+</style>
 </head>
 <body>
 <div class="bg-image"></div>
-    <h1>なんでも2026 ボンサイアップス　おしながき</h1>
-    <p>2026年のAIデモプロジェクト集</p>
 
-    <div class="project">
-        <h2>挨拶音声 TTS/Suno</h2>
-        <span class="tag">TTS</span>
-        <span class="tag">Suno</span>
-        <p>挨拶用の音声ファイル</p>
-        <audio controls src="%E6%8C%A8%E6%8B%B6.mp3"></audio><br>
-        <a href="%E6%8C%A8%E6%8B%B6.mp3">音声をダウンロード</a>
-    </div>
+<h1>なんでも2026 ボンサイアップス　おしながき</h1>
+<p>2026年のAIデモプロジェクト集</p>
 
-    <div class="project">
-        <h2>アプリ　いくつにみえる？ VLM</h2>
-        <span class="tag">VLM</span>
-        <p>画像から数を認識するアプリ</p>
-        <a href="https://ikutsu.onrender.com/">アプリを開く</a>
-    </div>
+<div class="project">
+    <h2>挨拶音声 TTS/Suno</h2>
+    <span class="tag">TTS</span><span class="tag">Suno</span>
+    <p>挨拶用の音声ファイル</p>
+    <audio controls src="%E6%8C%A8%E6%8B%B6.mp3"></audio><br>
+    <a href="%E6%8C%A8%E6%8B%B6.mp3">音声をダウンロード</a>
+</div>
 
-    <div class="project">
-        <h2>喜怒哀楽判定ゲーム mediapipe/LLM</h2>
-        <span class="tag">mediapipe</span>
-        <span class="tag">LLM</span>
-        <p>表情から感情を判定するゲーム</p>
-        <a href="https://ikutsu.onrender.com/">ゲームを開く</a>
-    </div>
+<div class="project">
+    <h2>アプリ　いくつにみえる？ VLM</h2>
+    <span class="tag">VLM</span>
+    <p>画像から数を認識するアプリ</p>
+    <a href="https://ikutsu.onrender.com/">アプリを開く</a>
+</div>
 
-    <div class="project">
-        <h2>夢をわけるアプリ localLLM</h2>
-        <span class="tag">localLLM</span>
-        <p>ローカルLLMを使った夢分解アプリ（要ローカル起動）</p>
-        <a href="http://localhost:3000">ローカルで開く</a>
-    </div>
+<div class="project">
+    <h2>喜怒哀楽判定ゲーム mediapipe/LLM</h2>
+    <span class="tag">mediapipe</span><span class="tag">LLM</span>
+    <p>表情から感情を判定するゲーム</p>
+    <a href="https://kidoairaku.onrender.com/">ゲームを開く</a>
+</div>
 
-    <div class="project">
-        <h2>夢日記SFが読める夢百夜　localLLM</h2>
-        <span class="tag">localLLM</span>
-        <span class="tag">SF</span>
-        <p>夢日記をSFとして読めるアプリ</p>
-        <a href="http://yume-hyakuya.onrender.com/">アプリを開く</a>
-    </div>
+<div class="project">
+    <h2>夢をわけるアプリ localLLM</h2>
+    <span class="tag">localLLM</span>
+    <p>ローカルLLMを使った夢分解アプリ（要ローカル起動）</p>
+    <a href="http://localhost:3000">ローカルで開く</a>
+</div>
 
-    <div class="project">
-        <h2>おしゃれてれびyoutube</h2>
-        <span class="tag">YouTube</span>
-        <p>YouTubeチャンネル「おしゃれてれび」</p>
-        <a href="https://www.youtube.com/@kanalvideo/">チャンネルを見る</a>
-    </div>
-   <img src="https://github.com/bonsai/nandemo2026/blob/main/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%886%E6%97%A5%2005_03_58.png?raw=true">
+<div class="project">
+    <h2>夢日記SFが読める夢百夜　localLLM</h2>
+    <span class="tag">localLLM</span><span class="tag">SF</span>
+    <p>夢日記をSFとして読めるアプリ</p>
+    <a href="http://yume-hyakuya.onrender.com/">アプリを開く</a>
+</div>
 
-    <div class="project">
-        <h2>X.com v0n5ai</h2>
-        <span class="tag">X</span>
-        <span class="tag">SNS</span>
-        <p>X.comアカウント</p>
-        <a href="https://x.com/v0n5ai">X.comを開く</a>
-    </div>
+<!-- ★----- ここから新規追加（卒アル） -----★ -->
+<div class="project">
+    <h2>卒アル アルバム</h2>
+    <span class="tag">卒アル</span>
+    <p>卒業アルバムのページです。思い出の写真やコメントをご覧ください。</p>
+    <a href="woman_graduation_album.html">卒アルを見る</a>
+</div>
+<!-- ★----- ここまで新規追加 -----★ -->
+
+<div class="project">
+    <h2>おしゃれてれびyoutube</h2>
+    <span class="tag">YouTube</span>
+    <p>YouTubeチャンネル「おしゃれてれび」</p>
+    <a href="https://www.youtube.com/@kanalvideo/">チャンネルを見る</a>
+</div>
+
+<div class="project">
+    <h2>X.com v0n5ai</h2>
+    <span class="tag">X</span><span class="tag">SNS</span>
+    <p>X.comアカウント</p>
+    <a href="https://x.com/v0n5ai">X.comを開く</a>
+</div>
+
+<script>
+/* --------------------------------------------------------------
+ *  1️⃣ 背景画像の濃さ（opacity）をスクロール位置に合わせて変える
+ * -------------------------------------------------------------- */
+(function () {
+    const bg = document.querySelector('.bg-image');
+    const MIN_OPACITY = 0.08;
+    const MAX_OPACITY = 0.48;
+    let ticking = false;
+
+    function updateOpacity() {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollY   = window.scrollY || window.pageYOffset;
+        const progress  = docHeight > 0 ? scrollY / docHeight : 0;
+        const newOpacity = MIN_OPACITY + progress * (MAX_OPACITY - MIN_OPACITY);
+        bg.style.setProperty('--bg-opacity', newOpacity.toFixed(3));
+        ticking = false;
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateOpacity);
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', onScroll);
+    updateOpacity();   // 初期表示
+})();
+
+/* --------------------------------------------------------------
+ *  2️⃣ 各リンクを QR コード化してカード内右側に配置
+ * -------------------------------------------------------------- */
+(function () {
+    const QR_BASE = 'https://chart.googleapis.com/chart?chs=80x80&cht=qr&chl=';
+
+    document.querySelectorAll('.project').forEach(project => {
+        const link = project.querySelector('a[href]');
+        if (!link) return;                     // リンクが無ければスキップ
+
+        const url    = link.getAttribute('href');
+        const imgSrc = QR_BASE + encodeURIComponent(url);
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'qr-wrapper';
+
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = `QR code for ${url}`;
+
+        wrapper.appendChild(img);
+        project.appendChild(wrapper);           // 絶対配置のまま追加
+    });
+})();
+</script>
 </body>
 </html>
